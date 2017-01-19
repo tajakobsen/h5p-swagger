@@ -1,0 +1,147 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: h5p hub authentication
+  description: Authentication to get access to the h5p hub
+  termsOfService: http://helloreverb.com/terms/
+  contact:
+    name: h5p core team
+    email: info@h5p.org
+    url: http://h5p.org
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+host: auth.h5p.org
+basePath: /api/v1
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /auth/anonymous-site/token:
+    get:
+      description: Returns a signed token for anonymous site authentication
+      operationId: anonomousToken
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: level 1 token
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/token'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+  /auth/organization:
+    post:
+      description: Returns the sites related to this organization
+      operationId: addOrganization
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: level 1 token
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/token'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+  /auth/organization/{id}:
+    get:
+      description: Returns info about the organization
+      operationId: getOrganization
+      parameters:
+        - name: id
+          in: path
+          description: ID of the organization
+          required: true
+          type: string
+          format: uuid
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Organization information
+          schema:
+            $ref: '#/definitions/organization'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+  /auth/organization/{id}/sites:
+    get:
+      description: Returns the sites related to this organization
+      operationId: listSites
+      parameters:
+        - name: id
+          in: path
+          description: ID of the organization
+          required: true
+          type: string
+          format: uuid
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: level 1 token
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/token'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+    post:
+      description: Returns the sites related to this organization
+      operationId: addSite
+      parameters:
+        - name: id
+          in: path
+          description: ID of the organization
+          required: true
+          type: string
+          format: uuid
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: level 1 token
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/token'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+definitions:
+  token:
+    type: string
+  organization:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+  errorModel:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
